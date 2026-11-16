@@ -58,6 +58,7 @@ audio.addEventListener('error', () => {
   reflectMusic();
 });
 document.addEventListener('visibilitychange', () => {
+  document.documentElement.classList.toggle('is-backgrounded', document.hidden);
   if (document.hidden) { ++playAttempt; audio.pause(); }
   else if (wantsMusic) void startMusic();
 });
@@ -100,6 +101,12 @@ else {
 }
 reducedMotion.addEventListener('change', event => { if (event.matches) finishPoem(); });
 const reveals = document.querySelectorAll('.reveal');
+// Nearby content enters in a short sequence; each block remains readable on arrival.
+document.querySelectorAll('.collection-inner, .invitation-inner, .epilogue-copy').forEach(group => {
+  group.querySelectorAll('.reveal').forEach((element, index) => {
+    element.style.setProperty('--reveal-delay', `${Math.min(index % 3, 2) * 100}ms`);
+  });
+});
 if ('IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
